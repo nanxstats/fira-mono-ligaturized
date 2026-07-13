@@ -1,77 +1,84 @@
-# Paper Mono Ligaturized
+# Fira Mono Ligaturized
 
-[Paper Mono](https://github.com/paper-design/paper-mono) patched with
-Fira Code ligatures via Ligaturizer.
+[Fira Mono](https://github.com/mozilla/Fira) patched with selected
+[Fira Code](https://github.com/tonsky/FiraCode) ligatures and character designs
+via [Ligaturizer](https://github.com/ToxicFrog/Ligaturizer).
 
-The generated fonts also promote Paper Mono's slashed zero alternate to the
-default `0` glyph, so editors do not need explicit support for configuring
-OpenType features.
+The result keeps Fira Mono's letterforms and compact 600-unit tracking while
+adding programming ligatures. The following Fira Code 6.2 stylistic variants
+are promoted to the default glyphs, so editor support for their OpenType
+feature tags is not required:
 
-![Paper Mono in Ghostty. With Ghostty configuration `adjust-cell-height = 8`. Theme: Dracula+.](documentation/screenshot-ghostty.png)
+- `zero`: dotted `0`
+- `cv02`: single-storey `g`
+- `cv10`: serifed `l`
+- `ss03`: conventional `&`
+- `ss05`: enclosed `@`
 
 ## Setup
 
-Install the ligaturized fonts from `fonts/` using your OS font manager.
+Install the generated fonts from `fonts/` using your OS font manager.
 
-Paper Mono currently ships eight upright weights and no italic styles, so this
-repo generates these variants:
+Fira Mono 3.206 has three upright weights and no italic styles. This repo
+generates:
 
-- `LigaPaperMono-Thin.otf`
-- `LigaPaperMono-ExtraLight.otf`
-- `LigaPaperMono-Light.otf`
-- `LigaPaperMono-Regular.otf`
-- `LigaPaperMono-Medium.otf`
-- `LigaPaperMono-SemiBold.otf`
-- `LigaPaperMono-Bold.otf`
-- `LigaPaperMono-ExtraBold.otf`
+- `LigaFiraMono-Regular.otf`
+- `LigaFiraMono-Medium.otf`
+- `LigaFiraMono-Bold.otf`
 
 ### VS Code
 
 In VS Code, press `Cmd` + `Shift` + `P`, search for
-`Preferences: Open User Settings (JSON)`. In the opened `settings.json`,
-set font family to `Liga Paper Mono` and enable ligatures:
+`Preferences: Open User Settings (JSON)`, and configure the font family and
+ligatures:
 
 ```json
-"editor.fontFamily": "'Liga Paper Mono', monospace",
+"editor.fontFamily": "'Liga Fira Mono', monospace",
 "editor.fontLigatures": "'calt', 'liga'",
-"terminal.integrated.fontFamily": "'Liga Paper Mono', monospace",
+"terminal.integrated.fontFamily": "'Liga Fira Mono', monospace",
 "terminal.integrated.fontLigatures.enabled": true,
 ```
 
 ### Ghostty
 
-Open Ghostty settings (`Cmd` + `,`) and set font family to `Liga Paper Mono`:
+Open Ghostty settings (`Cmd` + `,`) and set:
 
 ```ini
-font-family = Liga Paper Mono
+font-family = Liga Fira Mono
 ```
 
-Press `Cmd` + `Shift` + `,` to reload the terminal with the new configuration.
+Press `Cmd` + `Shift` + `,` to reload the configuration.
 
 ## Build
 
-Run `make build` in the repository root on macOS with git and Homebrew.
+Run `make` or `make build` in the repository root. The build requires `git`,
+`curl`, `unzip`, and FontForge. On macOS, the Makefile installs FontForge with
+Homebrew if it is missing.
 
 The Makefile will:
 
-- Reuse local `paper-mono/` and `Ligaturizer/` clones when present, or clone
-  `paper-mono` plus Ligaturizer when missing.
-- Initialize only the `fonts/fira` submodule inside Ligaturizer.
-- Stage the eight Paper Mono `otf` files from `paper-mono/fonts/otf/` into
-  `Ligaturizer/fonts/paper-mono/`.
-- Patch Ligaturizer so `renamed_fonts` emits the `Liga Paper Mono` family for
-  every Paper Mono weight.
-- Remove the same ligatures that were excluded in the DM Mono version.
-- Post-process the ligaturized fonts so `zero.zero` becomes the default `zero`
-  glyph.
-- Write the ligaturized `otf` files into `fonts/`.
+- Reuse `Fira-4.106.zip` and `Fira_Code_v6.2.zip` when present, or download
+  them from their GitHub release URLs when missing.
+- Extract the Regular, Medium, and Bold Fira Mono OTFs and their matching Fira
+  Code 6.2 TTFs.
+- Reuse a local `Ligaturizer/` checkout when present, or shallow-clone it when
+  missing, then initialize only its `fonts/fira` submodule.
+- Stage the three Fira Mono OTFs in `Ligaturizer/fonts/fira-mono/` and patch
+  Ligaturizer's `renamed_fonts` mapping to emit the `Liga Fira Mono` family.
+- Remove the intentionally excluded ligatures listed below.
+- Add Ligaturizer's programming ligatures without replacing Fira Mono's
+  ordinary punctuation glyphs.
+- Post-process each weight with its matching Fira Code 6.2 TTF, promote the
+  five selected variants to their base characters, and preserve Fira Mono's
+  monospaced advance width.
+- Write the final OTFs to `fonts/`.
 
-Run `make` to perform the same build and then remove `paper-mono/` and
-`Ligaturizer/` afterward. Run `make clean` to remove both cloned sources and
-generated fonts.
+`make cleanup` removes the Ligaturizer checkout and extracted source trees but
+keeps the downloaded archives and generated fonts. `make clean` also removes
+the generated fonts.
 
 ### Dropped ligatures
 
-These ligatures from Fira Code are intentionally omitted:
+These ligatures are intentionally omitted:
 
 `&&`, `~@`, `\/`, `.?`, `?:`, `?=`, `?.`, `??`, `;;`, `/\`
