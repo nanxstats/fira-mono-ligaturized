@@ -17,7 +17,13 @@ feature tags is not required:
 
 ## Setup
 
-Install the generated fonts from `fonts/` using your OS font manager.
+Install with Homebrew:
+
+```bash
+brew install --cask nanxstats/tap/font-fira-mono-ligaturized
+```
+
+Or install the generated fonts from `fonts/` using your OS font manager.
 
 Fira Mono 3.206 has three upright weights and no italic styles. This repo
 generates:
