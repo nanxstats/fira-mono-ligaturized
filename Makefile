@@ -27,13 +27,16 @@ LIG_FONTS := $(addprefix $(LIG_OUTPUT_DIR)/LigaFiraMono-,$(addsuffix .otf,$(FIRA
 FINAL_FONTS := $(addprefix $(OUTPUT_DIR)/LigaFiraMono-,$(addsuffix .otf,$(FIRA_MONO_WEIGHTS)))
 
 .DEFAULT_GOAL := all
-.SECONDARY: $(LIG_FONTS)
+.SECONDARY: $(LIG_FONTS) $(VARIANT_FONTS)
 
-.PHONY: all build deps cleanup clean
+.PHONY: all build test deps cleanup clean
 
 all: build
 
 build: deps $(FINAL_FONTS)
+
+test: build
+	fontforge -lang=py -script tests/test_fira_code_glyphs.py
 
 deps:
 	@for tool in curl git unzip; do \
